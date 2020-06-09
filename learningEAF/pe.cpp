@@ -41,12 +41,16 @@ void readPeHeader(void* pheader) {
 	are the names of the exported functions in this module.
 	*/
 
-	//DWORD* Name = (DWORD*)((BYTE*)pheader + pExportImageDir->AddressOfNames);
-	auto Name = (DWORD*)((BYTE*)pheader + pExportImageDir->AddressOfNames); //we modern cpp now
+	//DWORD* name = (DWORD*)((BYTE*)pheader + pExportImageDir->AddressOfNames);
+	auto name = (DWORD*)((BYTE*)pheader + pExportImageDir->AddressOfNames); //we modern cpp now
+	auto address = (DWORD*)((BYTE*)pheader + pExportImageDir->AddressOfFunctions);
+	auto ordinal = (WORD*)((BYTE*)pheader + pExportImageDir->AddressOfNameOrdinals);
+
 
 	for (int i = 0; i < pExportImageDir->NumberOfFunctions; i++) {
-		auto out = (char*)pheader + Name[i];
-		printf_s("%s \n",out);
+		auto currentName = (char*)pheader + name[i];
+		auto currentAddr = (PVOID)((BYTE*)pheader + address[ordinal[i]]);
+		printf_s("%s :: %p \n",currentName,currentAddr);
 	};
 
 };
