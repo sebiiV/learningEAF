@@ -37,6 +37,7 @@ LDR_DATA_TABLE_ENTRY* GetLDREntryInternal(const wchar_t* modName)
 			}
 		}
 	}
+	std::cout << std::endl;
 	return modEntry;
 }
 
@@ -46,7 +47,7 @@ char* GetModuleBaseAddressInternalPEB(const wchar_t* modName)
 	return (char*)modEntry->DllBase;
 }
 
-LDR_DATA_TABLE_ENTRY* GetModEntry(const wchar_t* modName) {
+LDR_DATA_TABLE_ENTRY* getModEntry(const wchar_t* modName) {
 	LDR_DATA_TABLE_ENTRY* modEntry = GetLDREntryInternal(modName);
 	return modEntry;
 }

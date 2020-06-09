@@ -6,7 +6,13 @@ PIMAGE_NT_HEADERS pImageNTHeaders = {};
 PIMAGE_EXPORT_DIRECTORY pExportImageDir = {};
 
 
-void readPeHeader(void* pheader) {
+/*
+useful links
+https://ired.team/offensive-security/code-injection-process-injection/finding-kernel32-base-and-function-addresses-in-shellcode
+https://blog.kowalczyk.info/articles/pefileformat.html
+*/
+
+auto getFuncAddr(void* pheader)->void* {
 	pDOSHeader = (PIMAGE_DOS_HEADER)pheader;
 	/*
 	e_lfanew, is a 4-byte offset into the file where the PE file header is located.
@@ -45,12 +51,13 @@ void readPeHeader(void* pheader) {
 	auto name = (DWORD*)((BYTE*)pheader + pExportImageDir->AddressOfNames); //we modern cpp now
 	auto address = (DWORD*)((BYTE*)pheader + pExportImageDir->AddressOfFunctions);
 	auto ordinal = (WORD*)((BYTE*)pheader + pExportImageDir->AddressOfNameOrdinals);
-
-
+	
 	for (int i = 0; i < pExportImageDir->NumberOfFunctions; i++) {
 		auto currentName = (char*)pheader + name[i];
 		auto currentAddr = (PVOID)((BYTE*)pheader + address[ordinal[i]]);
-		printf_s("%s :: %p \n",currentName,currentAddr);
+		//printf_s("%s :: %p \n",currentName,currentAddr);
+		if (!strcmp(currentName, "InvokeWinExec")) {
+			return currentAddr;
+		}
 	};
-
 };
