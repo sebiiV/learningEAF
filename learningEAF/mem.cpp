@@ -29,7 +29,7 @@ LDR_DATA_TABLE_ENTRY* GetLDREntryInternal(const wchar_t* modName)
 		if (mod->BaseDllName.Buffer)
 		{
 			wprintf_s(mod->FullDllName.Buffer);
-			std::cout << modName << std::endl;
+			std::cout << std::endl;
 			if (_wcsicmp(modName, mod->BaseDllName.Buffer) == 0)
 			{
 				modEntry = mod;

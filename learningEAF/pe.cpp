@@ -54,7 +54,7 @@ auto getFuncAddr(void* pheader)->void* {
 		auto currentName = (char*)pheader + name[i];
 		auto currentAddr = (PVOID)((BYTE*)pheader + address[ordinal[i]]);
 		printf_s("%s :: %p \n",currentName,currentAddr);
-		if (!strcmp(currentName, "InvokeWinExec")) {
+		if (!strcmp(currentName, "WinExec")) {
 			return currentAddr;
 		}
 	};
