@@ -5,12 +5,16 @@
 int main() {
 	LDR_DATA_TABLE_ENTRY* modEntry;
 	modEntry = getModEntry(L"kernel32.dll");
-	printf("DLL baseaddr: %p\n", modEntry->DllBase);
+	printf("DLL baseaddr: 0x%p\n", modEntry->DllBase);
 	auto addr = getFuncAddr(modEntry->DllBase);
-	printf("Function addr: %p\n", addr);
+	printf("Function addr: 0x%p\n", addr);
 
-	typedef int func(void);
-	func* f = (func*)addr;
-	int i = f();
+	/*
+	typedef int (*FunctionType)(LPCSTR,UINT);
+	FunctionType function = (FunctionType)addr;
+	LPCSTR temp = "calc.exe";
+	function(temp,0);
+	*/
+
 	return 0;
 }

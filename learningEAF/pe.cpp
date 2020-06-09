@@ -46,8 +46,6 @@ auto getFuncAddr(void* pheader)->void* {
 	This field is an RVA and points to an array of string pointers. The strings 
 	are the names of the exported functions in this module.
 	*/
-
-	//DWORD* name = (DWORD*)((BYTE*)pheader + pExportImageDir->AddressOfNames);
 	auto name = (DWORD*)((BYTE*)pheader + pExportImageDir->AddressOfNames); //we modern cpp now
 	auto address = (DWORD*)((BYTE*)pheader + pExportImageDir->AddressOfFunctions);
 	auto ordinal = (WORD*)((BYTE*)pheader + pExportImageDir->AddressOfNameOrdinals);
@@ -55,7 +53,7 @@ auto getFuncAddr(void* pheader)->void* {
 	for (int i = 0; i < pExportImageDir->NumberOfFunctions; i++) {
 		auto currentName = (char*)pheader + name[i];
 		auto currentAddr = (PVOID)((BYTE*)pheader + address[ordinal[i]]);
-		//printf_s("%s :: %p \n",currentName,currentAddr);
+		printf_s("%s :: %p \n",currentName,currentAddr);
 		if (!strcmp(currentName, "InvokeWinExec")) {
 			return currentAddr;
 		}
