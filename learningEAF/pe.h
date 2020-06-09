@@ -10,4 +10,4 @@
 0x24 into the Export Table RVA of Ordinal Table - function order number as listed in the table
 */
 
-auto getFuncAddr(void* pheader)->void*;
+auto getFuncAddr(void* pheader,char* funcName)->void*;

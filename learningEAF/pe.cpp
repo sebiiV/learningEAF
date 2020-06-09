@@ -12,7 +12,7 @@ https://ired.team/offensive-security/code-injection-process-injection/finding-ke
 https://blog.kowalczyk.info/articles/pefileformat.html
 */
 
-auto getFuncAddr(void* pheader)->void* {
+auto getFuncAddr(void* pheader,char* funcName)->void* {
 	pDOSHeader = (PIMAGE_DOS_HEADER)pheader;
 	/*
 	e_lfanew, is a 4-byte offset into the file where the PE file header is located.
@@ -53,8 +53,8 @@ auto getFuncAddr(void* pheader)->void* {
 	for (int i = 0; i < pExportImageDir->NumberOfFunctions; i++) {
 		auto currentName = (char*)pheader + name[i];
 		auto currentAddr = (size_t*)((BYTE*)pheader + address[ordinal[i]]);
-		printf_s("%s :: %p \n",currentName,(char*)currentAddr);
-		if (!strcmp(currentName, "WinExec")) {
+		//printf_s("%s :: %p \n",currentName,(char*)currentAddr);
+		if (!strcmp(currentName, funcName)) {
 			return currentAddr;
 		}
 	};
