@@ -18,7 +18,7 @@ auto getFuncAddr(void* pheader)->void* {
 	e_lfanew, is a 4-byte offset into the file where the PE file header is located.
 	It is necessary to use this offset to locate the PE header in the file
 	*/
-	pImageNTHeaders = (PIMAGE_NT_HEADERS)((DWORD)pheader + pDOSHeader->e_lfanew);
+	pImageNTHeaders = (PIMAGE_NT_HEADERS)((size_t)pheader + pDOSHeader->e_lfanew);
 
 	/*
 	NumberOfRvaAndSizes. 
@@ -34,7 +34,7 @@ auto getFuncAddr(void* pheader)->void* {
 	element 0 is export dir
 	*/
 
-	pExportImageDir = (PIMAGE_EXPORT_DIRECTORY)((DWORD)pheader +
+	pExportImageDir = (PIMAGE_EXPORT_DIRECTORY)((size_t)pheader +
 		pImageNTHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);
 
 	/*
@@ -46,14 +46,14 @@ auto getFuncAddr(void* pheader)->void* {
 	This field is an RVA and points to an array of string pointers. The strings 
 	are the names of the exported functions in this module.
 	*/
-	auto name = (DWORD*)((BYTE*)pheader + pExportImageDir->AddressOfNames); //we modern cpp now
-	auto address = (DWORD*)((BYTE*)pheader + pExportImageDir->AddressOfFunctions);
+	auto name = (size_t*)((BYTE*)pheader + pExportImageDir->AddressOfNames); //we modern cpp now
+	auto address = (size_t*)((BYTE*)pheader + pExportImageDir->AddressOfFunctions);
 	auto ordinal = (WORD*)((BYTE*)pheader + pExportImageDir->AddressOfNameOrdinals);
 	
 	for (int i = 0; i < pExportImageDir->NumberOfFunctions; i++) {
 		auto currentName = (char*)pheader + name[i];
-		auto currentAddr = (PVOID)((BYTE*)pheader + address[ordinal[i]]);
-		printf_s("%s :: %p \n",currentName,currentAddr);
+		auto currentAddr = (size_t*)((BYTE*)pheader + address[ordinal[i]]);
+		printf_s("%s :: %p \n",currentName,(char*)currentAddr);
 		if (!strcmp(currentName, "WinExec")) {
 			return currentAddr;
 		}

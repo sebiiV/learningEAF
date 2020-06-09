@@ -1,21 +1,21 @@
 #include "mem.h"
 #include "pe.h"
-#include <WinBase.h>
 
 
 int main() {
-	LDR_DATA_TABLE_ENTRY* modEntry;
 
-	printf("%p \n",WinExec);
+	void* addr = nullptr;
+	LDR_DATA_TABLE_ENTRY* modEntry;
 	modEntry = getModEntry(L"kernel32.dll");
 	printf("DLL baseaddr: 0x%p\n", modEntry->DllBase);
-	auto addr = getFuncAddr(modEntry->DllBase);
+	addr = getFuncAddr(modEntry->DllBase);
 	printf("Function addr: 0x%p\n", addr);
 
-	typedef int (*FunctionType)(LPCSTR,UINT);
-	FunctionType function = (FunctionType)addr;
-	LPCSTR temp = "calc.exe";
-	function(temp,0);
+	typedef UINT (__stdcall *func)(LPCSTR,UINT);
+	func function = (func)addr;
+	//LPCSTR temp = "calc.exe";
+	UINT i = function((LPCSTR)"calc.exe",(UINT)5);
 
+	printf_s("\n calc popped!");
 	return 0;
 }
