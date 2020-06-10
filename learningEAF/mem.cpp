@@ -1,6 +1,31 @@
 #include "mem.h"
 #include <windows.h>
 #include "ntapi.h"
+uintptr_t GetModuleBaseAddress(DWORD procID, const wchar_t* modName)
+{
+
+	uintptr_t modBaseAddr = 0;
+	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, procID);
+
+	if (hSnap != INVALID_HANDLE_VALUE)
+	{
+		MODULEENTRY32  modEntry;
+		//Before calling the Process32First function, set this member to sizeof(PROCESSENTRY32). If you do not initialize dwSize, Process32First fails.
+		modEntry.dwSize = sizeof(modEntry);
+		// Loop till we find our module
+		if (Module32First(hSnap, &modEntry)) {
+			do {
+				if (!_wcsicmp(modEntry.szModule, modName))
+				{
+					modBaseAddr = (uintptr_t)modEntry.modBaseAddr;
+					break;
+				}
+			} while (Module32Next(hSnap, &modEntry));
+		}
+	}
+	CloseHandle(hSnap);
+	return modBaseAddr;
+}
 
 /*
 Internal PEB functions

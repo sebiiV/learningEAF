@@ -16,6 +16,7 @@
 #define GDI_HANDLE_BUFFER_SIZE GDI_HANDLE_BUFFER_SIZE64
 #endif
 
+
 // Source: http://processhacker.sourceforge.net
 typedef enum _PROCESSINFOCLASS
 {

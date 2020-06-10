@@ -35,5 +35,8 @@
     <ClInclude Include="pe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ntddk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

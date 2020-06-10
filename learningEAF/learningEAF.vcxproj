@@ -144,6 +144,7 @@
     <ClCompile Include="pe.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ntddk.h" />
     <ClInclude Include="mem.h" />
     <ClInclude Include="ntapi.h" />
     <ClInclude Include="pe.h" />
