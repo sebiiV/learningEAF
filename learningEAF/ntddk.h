@@ -23,7 +23,9 @@ typedef struct _CLIENT_ID
     PVOID UniqueThread;
 } CLIENT_ID, * PCLIENT_ID;
 
-#define InitOA(ptr, root, attrib, name, desc, qos) { (ptr)->Length = sizeof(OBJECT_ATTRIBUTES);  (ptr)->RootDirectory = root; (ptr)->Attributes = attrib; (ptr)->ObjectName = name; (ptr)->SecurityDescriptor = desc; (ptr)->SecurityQualityOfService = qos; }
+typedef _Null_terminated_ const wchar_t* NTSTRSAFE_PCWSTR;
+
+#define InitOA(ptr, root, attrib, name, desc, qos) { (ptr)->Length = sizeof(OBJECT_ATTRIBUTES); (ptr)->RootDirectory = root; (ptr)->Attributes = attrib; (ptr)->ObjectName = name; (ptr)->SecurityDescriptor = desc; (ptr)->SecurityQualityOfService = qos; }
 typedef NTSYSAPI NTSTATUS(NTAPI* __ntOpenProcess)(
     PHANDLE            ProcessHandle,
     ACCESS_MASK        DesiredAccess,

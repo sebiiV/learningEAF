@@ -3,9 +3,11 @@
 #include "ntddk.h"
 
 
+
 //#define calc
 //#define alloc
-#define ntopen
+//#define ntopen
+#define ntunload
 
 #if defined(calc) || defined(alloc)
 #define modName L"kernel32.dll"
@@ -47,8 +49,8 @@ int main(int ) {
 		DWORD  flProtect
 	*/
 	typedef LPVOID(__stdcall* func)(LPVOID, SIZE_T,DWORD,DWORD);
-	func function = (func)addr;
-	auto ret=function((LPVOID)0,(DWORD)1024,MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	func valloc= (func)addr;
+	auto ret=valloc((LPVOID)0,(DWORD)1024,MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 	printf_s("1024 bytes allocated at 0x%p \n", ret);
 #endif 
 
@@ -74,9 +76,9 @@ int main(int ) {
 
 	//Get Pid
 	CLIENT_ID uPid = { NULL };
-	auto ret1 =GetWindowThreadProcessId(hWindow, (PDWORD)&uPid.UniqueProcess);
+	auto ret1 = GetWindowThreadProcessId(hWindow, (PDWORD)&uPid.UniqueProcess);
 	if (ret1 == NULL) {
-		std::cout << "invalid pid" << std::endl;
+		std::cout << "Invalid pid" << std::endl;
 		return 1;
 	}
 
@@ -94,9 +96,42 @@ int main(int ) {
 		std::cout << "something went wrong..." << std::endl;
 	}
 	else std::cout << "notepad shut down :)" << std::endl;
+#endif
 
+#ifdef ntunload
+	addr = getFuncAddr(modEntry->DllBase, (char*)"LdrUnloadDll");
+	printf("LdrUnloadDll addr: 0x%p\n", addr);
+	typedef NTSTATUS(NTAPI* UNLOADDLL)(HANDLE);
+	UNLOADDLL unloadDll = (UNLOADDLL)addr;
+
+
+	/*
+	addr = getFuncAddr(modEntry->DllBase, (char*)"LdrGetDllHandle");
+	printf("LdrGetDllHandle addr: 0x%p\n", addr);
+	typedef NTSTATUS(NTAPI* GETDLLHANDLE)(PWORD,PVOID,PUNICODE_STRING,OUT PHANDLE);
+	GETDLLHANDLE getDllHandle = (GETDLLHANDLE)addr;
+
+	addr = getFuncAddr(modEntry->DllBase, (char*)"RtlInitUnicodeString");
+	printf("RtlInitUnicodeString addr: 0x%p\n", addr);
+	typedef NTSTATUS(NTAPI* INITUNICODESTR)(PUNICODE_STRING, NTSTRSAFE_PCWSTR);
+	INITUNICODESTR initUnicodeStr = (INITUNICODESTR)addr;
+
+	UNICODE_STRING unistr;
+	initUnicodeStr(&unistr, L"PayloadRestrictions.dll");
+	HANDLE dllHandle;
+	NTSTATUS ret = getDllHandle(NULL, NULL, &unistr, &dllHandle);
+	*/
+
+	//Turns out a handle in this case is the same as dllbase addr, so all the above code isn't needed!
+	auto dllHandle = getModEntry(L"PayloadRestrictions.dll");
+	printf("PayloadRestrictions.dll baseaddr: 0x%p\n", modEntry->DllBase);
+	NTSTATUS ret = unloadDll((HANDLE)dllHandle->DllBase);
+
+	printf_s("Printing module list");
+	getModEntry(L"");
 
 #endif
+
 
 	printf_s("\nfunction called");
 	return 0;
