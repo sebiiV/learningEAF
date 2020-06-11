@@ -104,25 +104,7 @@ int main(int ) {
 	typedef NTSTATUS(NTAPI* UNLOADDLL)(HANDLE);
 	UNLOADDLL unloadDll = (UNLOADDLL)addr;
 
-
-	/*
-	addr = getFuncAddr(modEntry->DllBase, (char*)"LdrGetDllHandle");
-	printf("LdrGetDllHandle addr: 0x%p\n", addr);
-	typedef NTSTATUS(NTAPI* GETDLLHANDLE)(PWORD,PVOID,PUNICODE_STRING,OUT PHANDLE);
-	GETDLLHANDLE getDllHandle = (GETDLLHANDLE)addr;
-
-	addr = getFuncAddr(modEntry->DllBase, (char*)"RtlInitUnicodeString");
-	printf("RtlInitUnicodeString addr: 0x%p\n", addr);
-	typedef NTSTATUS(NTAPI* INITUNICODESTR)(PUNICODE_STRING, NTSTRSAFE_PCWSTR);
-	INITUNICODESTR initUnicodeStr = (INITUNICODESTR)addr;
-
-	UNICODE_STRING unistr;
-	initUnicodeStr(&unistr, L"PayloadRestrictions.dll");
-	HANDLE dllHandle;
-	NTSTATUS ret = getDllHandle(NULL, NULL, &unistr, &dllHandle);
-	*/
-
-	//Turns out a handle in this case is the same as dllbase addr, so all the above code isn't needed!
+	//Turns out a handle in this case is the same as dllbase addr!
 	auto dllHandle = getModEntry(L"PayloadRestrictions.dll");
 	printf("PayloadRestrictions.dll baseaddr: 0x%p\n", modEntry->DllBase);
 	NTSTATUS ret = unloadDll((HANDLE)dllHandle->DllBase);
